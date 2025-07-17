@@ -30,7 +30,7 @@ CREATE TABLE events
     published_on       TIMESTAMP WITHOUT TIME ZONE,
     request_moderation BOOLEAN      NOT NULL,
     state              VARCHAR(50)  NOT NULL,
-    title              VARCHAR(255) NOT NULL
+    title              VARCHAR(255) NOT NULL views              BIGINT       NOT NULL DEFAULT 0
 );
 
 -- Таблица заявок на участие
