@@ -9,6 +9,7 @@ import ru.practicum.ViewStats;
 import ru.practicum.model.Hit;
 import ru.practicum.repository.HitRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,19 +31,22 @@ public class HitServiceImpl implements HitService {
     }
 
     @Override
-    public List<ViewStats> getStats(java.time.LocalDateTime start, java.time.LocalDateTime end,
+    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end,
                                     List<String> uris, boolean unique) {
 
-        if (unique && uris != null && !uris.isEmpty()) {
+        boolean hasUris = uris != null && !uris.isEmpty();
+
+        if (unique && hasUris) {
             return hitRepository.findAllUniqueWithUris(uris, start, end);
         }
         if (unique) {
             return hitRepository.findAllUniqueWithoutUris(start, end);
         }
-        if (uris != null && !uris.isEmpty()) {
+        if (hasUris) {
             return hitRepository.findAllWithUris(uris, start, end);
         }
         return hitRepository.findAllWithoutUris(start, end);
     }
+
 }
 
