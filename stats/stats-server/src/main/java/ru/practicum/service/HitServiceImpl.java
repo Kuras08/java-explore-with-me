@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.EndpointHit;
 import ru.practicum.ViewStats;
+import ru.practicum.ViewStatsProjection;
 import ru.practicum.model.Hit;
 import ru.practicum.repository.HitRepository;
 
@@ -33,19 +34,22 @@ public class HitServiceImpl implements HitService {
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end,
                                     List<String> uris, boolean unique) {
-
         boolean hasUris = uris != null && !uris.isEmpty();
+        List<ViewStatsProjection> projections;
 
         if (unique && hasUris) {
-            return hitRepository.findAllUniqueWithUris(uris, start, end);
+            projections = hitRepository.findAllUniqueWithUris(uris, start, end);
+        } else if (unique) {
+            projections = hitRepository.findAllUniqueWithoutUris(start, end);
+        } else if (hasUris) {
+            projections = hitRepository.findAllWithUris(uris, start, end);
+        } else {
+            projections = hitRepository.findAllWithoutUris(start, end);
         }
-        if (unique) {
-            return hitRepository.findAllUniqueWithoutUris(start, end);
-        }
-        if (hasUris) {
-            return hitRepository.findAllWithUris(uris, start, end);
-        }
-        return hitRepository.findAllWithoutUris(start, end);
+
+        return projections.stream()
+                .map(p -> new ViewStats(p.getApp(), p.getUri(), p.getHits()))
+                .toList();
     }
 
 }
