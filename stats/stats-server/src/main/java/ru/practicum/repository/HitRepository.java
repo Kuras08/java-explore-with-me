@@ -20,7 +20,7 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
             WHERE s.timestamp BETWEEN :start AND :end
               AND s.uri IN :uris
             GROUP BY s.app, s.uri
-            ORDER BY COUNT(s.ip) DESC, s.uri ASC
+            ORDER BY COUNT(s.ip) DESC
             """)
     List<ViewStats> findAllWithUris(@Param("uris") List<String> uris,
                                     @Param("start") LocalDateTime start,
@@ -31,7 +31,7 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
             FROM Hit s
             WHERE s.timestamp BETWEEN :start AND :end
             GROUP BY s.app, s.uri
-            ORDER BY COUNT(s.ip) DESC, s.uri ASC
+            ORDER BY COUNT(s.ip) DESC
             """)
     List<ViewStats> findAllWithoutUris(@Param("start") LocalDateTime start,
                                        @Param("end") LocalDateTime end);
@@ -42,7 +42,7 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
             WHERE s.timestamp BETWEEN :start AND :end
               AND s.uri IN :uris
             GROUP BY s.app, s.uri
-            ORDER BY COUNT(DISTINCT s.ip) DESC, s.uri ASC
+            ORDER BY COUNT(DISTINCT s.ip) DESC
             """)
     List<ViewStats> findAllUniqueWithUris(@Param("uris") List<String> uris,
                                           @Param("start") LocalDateTime start,
@@ -54,8 +54,9 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
             FROM Hit s
             WHERE s.timestamp BETWEEN :start AND :end
             GROUP BY s.app, s.uri
-            ORDER BY COUNT(DISTINCT s.ip) DESC, s.uri ASC
+            ORDER BY COUNT(DISTINCT s.ip) DESC
             """)
     List<ViewStats> findAllUniqueWithoutUris(@Param("start") LocalDateTime start,
                                              @Param("end") LocalDateTime end);
+
 }
