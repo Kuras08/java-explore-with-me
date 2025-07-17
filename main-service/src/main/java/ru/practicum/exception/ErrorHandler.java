@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
@@ -19,51 +19,53 @@ public class ErrorHandler {
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundException(final NotFoundException e) {
         log.warn("404 {}", e.getMessage());
-        return buildApiError(HttpStatus.NOT_FOUND, "Not found exception", e);
+        return buildApiError(HttpStatus.NOT_FOUND, "Not found exception", e.getMessage());
     }
 
     @ExceptionHandler(ConflictException.class)
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handleConflictException(final ConflictException e) {
         log.warn("409 {}", e.getMessage());
-        return buildApiError(HttpStatus.CONFLICT, "Conflict", e);
+        return buildApiError(HttpStatus.CONFLICT, "Conflict", e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
-        log.warn("400 {}", e.getMessage());
-        return buildApiError(HttpStatus.BAD_REQUEST, "Argument not valid", e);
+        String message = e.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining("; "));
+        log.warn("400 {}", message);
+        return buildApiError(HttpStatus.BAD_REQUEST, "Argument not valid", message);
     }
 
     @ExceptionHandler(ValidationException.class)
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleValidationException(final ValidationException e) {
         log.warn("400 {}", e.getMessage());
-        return buildApiError(HttpStatus.BAD_REQUEST, "Parameter not valid", e);
+        return buildApiError(HttpStatus.BAD_REQUEST, "Parameter not valid", e.getMessage());
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleMissingParamException(final MissingServletRequestParameterException e) {
         log.warn("400 {}", e.getMessage());
-        return buildApiError(HttpStatus.BAD_REQUEST, "Required request parameter not found", e);
+        return buildApiError(HttpStatus.BAD_REQUEST, "Required request parameter not found", e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @org.springframework.web.bind.annotation.ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ApiError handleInternalServerException(final Exception e) {
-        log.error("500 {} {}", e.getClass(), e.getMessage());
-        return buildApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", e);
+        log.error("500 {} {}", e.getClass(), e.getMessage(), e);
+        return buildApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", e.getMessage());
     }
 
-    private ApiError buildApiError(HttpStatus status, String reason, Exception e) {
+    private ApiError buildApiError(HttpStatus status, String reason, String message) {
         return ApiError.builder()
-                .status(status)
+                .status(status.name())
                 .reason(reason)
-                .message(e.getMessage())
+                .message(message)
                 .timestamp(LocalDateTime.now())
-                .errors(Arrays.asList(e.getStackTrace()))
                 .build();
     }
 }

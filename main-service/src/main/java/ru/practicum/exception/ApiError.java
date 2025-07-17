@@ -1,10 +1,8 @@
 package ru.practicum.exception;
 
 import lombok.*;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -12,10 +10,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ApiError {
-    private HttpStatus status;
+    private String status;           // было HttpStatus, стало String
     private String reason;
     private String message;
     private LocalDateTime timestamp;
-    private List<StackTraceElement> errors;
 }
+
 
