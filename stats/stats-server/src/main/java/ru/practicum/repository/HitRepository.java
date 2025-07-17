@@ -48,6 +48,7 @@ public interface HitRepository extends JpaRepository<Hit, Long> {
                                           @Param("start") LocalDateTime start,
                                           @Param("end") LocalDateTime end);
 
+
     @Query("""
             SELECT new ru.practicum.ViewStats(s.app, s.uri, COUNT(DISTINCT s.ip))
             FROM Hit s
