@@ -19,7 +19,7 @@ public class NewCompilationDto {
     @Size(min = 1, max = 50)
     private String title;
 
-    private Boolean pinned = false;
+    private boolean pinned = false;
 
     private List<Long> events;
 }

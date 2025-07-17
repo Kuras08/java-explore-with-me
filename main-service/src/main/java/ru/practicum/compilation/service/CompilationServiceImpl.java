@@ -17,10 +17,7 @@ import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.NotFoundException;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -82,7 +79,7 @@ public class CompilationServiceImpl implements CompilationService {
                 .collect(Collectors.toList());
     }
 
-    private Set<Event> fetchEvents(Set<Long> ids) {
+    private Set<Event> fetchEvents(Collection<Long> ids) {
         return ids == null || ids.isEmpty()
                 ? Collections.emptySet()
                 : new HashSet<>(eventRepo.findAllById(ids));
