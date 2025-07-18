@@ -8,6 +8,7 @@ import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.NewCompilationDto;
 import ru.practicum.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.compilation.service.CompilationService;
+import ru.practicum.exception.ValidationException;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,7 +31,10 @@ public class AdminCompilationController {
 
     @PatchMapping("/{compId}")
     public CompilationDto update(@PathVariable Long compId,
-                                 @RequestBody @Valid UpdateCompilationRequest dto) {
+                                 @RequestBody(required = false) @Valid UpdateCompilationRequest dto) {
+        if (dto == null) {
+            throw new ValidationException("Request body is missing");
+        }
         return service.update(compId, dto);
     }
 }

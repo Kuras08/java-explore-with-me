@@ -33,10 +33,10 @@ public class EventMapper {
                 .eventDate(event.getEventDate())
                 .initiator(event.getInitiator() != null ? UserMapper.toShortDto(event.getInitiator()) : null)
                 .location(event.getLocation())
-                .paid(event.isPaid())
+                .paid(event.getPaid()) // <--- Важно, если Boolean!
                 .participantLimit(event.getParticipantLimit())
                 .publishedOn(event.getPublishedOn())
-                .requestModeration(event.isRequestModeration())
+                .requestModeration(event.getRequestModeration()) // <--- Boolean!
                 .state(event.getState() != null ? event.getState().name() : null)
                 .views(views)
                 .confirmedRequests(confirmedRequests)
@@ -59,7 +59,7 @@ public class EventMapper {
                 .category(CategoryMapper.toDto(event.getCategory()))
                 .eventDate(event.getEventDate())
                 .initiator(UserMapper.toShortDto(event.getInitiator()))
-                .paid(event.isPaid())
+                .paid(event.getPaid())
                 .views(views)
                 .confirmedRequests(confirmedRequests)
                 .build();

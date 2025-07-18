@@ -28,6 +28,7 @@ import ru.practicum.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -154,7 +155,10 @@ public class EventServiceImpl implements EventService {
         Specification<Event> spec = EventSpecifications.publicSearch(text, categories, paid,
                 rangeStart, rangeEnd, onlyAvailable);
 
-        Pageable pageable = PageRequest.of(from / size, size);
+        int realSize = size > 0 ? size : 10;
+        int page = from / realSize;
+        Pageable pageable = PageRequest.of(page, realSize);
+
         List<Event> events = eventRepo.findAll(spec, pageable).stream()
                 .filter(e -> e.getState() == EventState.PUBLISHED)
                 .collect(Collectors.toList());
@@ -171,6 +175,7 @@ public class EventServiceImpl implements EventService {
                 uris,
                 true
         );
+        if (viewStats == null) viewStats = Collections.emptyList();
 
         Map<String, Long> uriToViews = viewStats.stream()
                 .collect(Collectors.toMap(ViewStats::getUri, ViewStats::getHits));
@@ -182,6 +187,7 @@ public class EventServiceImpl implements EventService {
                 })
                 .collect(Collectors.toList());
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -206,6 +212,7 @@ public class EventServiceImpl implements EventService {
 
         return EventMapper.toFullDto(event, getConfirmedRequests(id), views);
     }
+
 
     // ВСПОМОГАТЕЛЬНЫЕ -----------------------------------
     private void updateEventFields(Event event, String title, String annotation, String description,

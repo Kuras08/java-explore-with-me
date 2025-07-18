@@ -45,11 +45,11 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventState state = EventState.PENDING;
 
-    private boolean paid = false;
+    private Boolean paid = false;
 
     private Integer participantLimit = 0;
 
-    private boolean requestModeration = true;
+    private Boolean requestModeration = true;
 
     @Column(nullable = false)
     private Long views = 0L;
