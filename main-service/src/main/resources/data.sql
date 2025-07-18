@@ -35,4 +35,3 @@ INSERT INTO compilation_events (compilation_id, event_id)
 VALUES (1, 1),
        (1, 2),
        (2, 2);
-/*
