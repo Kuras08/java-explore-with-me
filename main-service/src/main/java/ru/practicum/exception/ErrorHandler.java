@@ -1,9 +1,12 @@
 package ru.practicum.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -67,6 +70,26 @@ public class ErrorHandler {
     public ApiError handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
         log.warn("409 {}", e.getMessage());
         return buildApiError(HttpStatus.CONFLICT, "Conflict", e.getMessage());
+    }
+
+    @ExceptionHandler(BindException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleBindException(BindException e) {
+        String message = e.getAllErrors().stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(Collectors.joining("; "));
+        log.warn("400 {}", message);
+        return buildApiError(HttpStatus.BAD_REQUEST, "Binding error", message);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleConstraintViolationException(ConstraintViolationException e) {
+        String message = e.getConstraintViolations().stream()
+                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+                .collect(Collectors.joining("; "));
+        log.warn("400 {}", message);
+        return buildApiError(HttpStatus.BAD_REQUEST, "Constraint violation", message);
     }
 
     private ApiError buildApiError(HttpStatus status, String reason, String message) {
