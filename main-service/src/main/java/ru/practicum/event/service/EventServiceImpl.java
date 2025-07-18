@@ -119,8 +119,7 @@ public class EventServiceImpl implements EventService {
         // Проверка eventDate при публикации
         if (dto.getStateAction() == UpdateEventAdminRequest.AdminStateAction.PUBLISH_EVENT) {
             if (dto.getEventDate() == null) {
-                // БЫЛО: throw new ValidationException(...)
-                // СТАЛО:
+                // БЫЛО так:
                 throw new ConflictException("eventDate must not be null when publishing event");
             }
             if (dto.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
@@ -144,6 +143,7 @@ public class EventServiceImpl implements EventService {
 
         return EventMapper.toFullDto(eventRepo.save(event), getConfirmedRequests(eventId));
     }
+
 
     // PUBLIC --------------------------------------------
     @Override

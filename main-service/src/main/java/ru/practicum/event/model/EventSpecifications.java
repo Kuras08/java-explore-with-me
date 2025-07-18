@@ -22,7 +22,8 @@ public class EventSpecifications {
         return (Root<Event> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
             Predicate predicate = cb.conjunction();
 
-            if (userIds != null && !userIds.isEmpty()) {
+            // Фильтрация по userIds только если список не содержит 0
+            if (userIds != null && !userIds.isEmpty() && !userIds.contains(0L)) {
                 predicate = cb.and(predicate, root.get("initiator").get("id").in(userIds));
             }
 
@@ -30,7 +31,8 @@ public class EventSpecifications {
                 predicate = cb.and(predicate, root.get("state").in(states));
             }
 
-            if (categoryIds != null && !categoryIds.isEmpty()) {
+            // Фильтрация по categoryIds только если список не содержит 0
+            if (categoryIds != null && !categoryIds.isEmpty() && !categoryIds.contains(0L)) {
                 predicate = cb.and(predicate, root.get("category").get("id").in(categoryIds));
             }
 

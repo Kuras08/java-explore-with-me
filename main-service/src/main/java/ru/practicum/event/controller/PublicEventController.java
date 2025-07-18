@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.service.EventService;
+import ru.practicum.exception.ValidationException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,11 +30,20 @@ public class PublicEventController {
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "0") int from,
             @RequestParam(defaultValue = "10") int size,
-            HttpServletRequest request) {
+            HttpServletRequest request
+    ) {
+        // ДО вызова сервиса — проверка:
+        if (rangeStart != null && rangeEnd != null && rangeEnd.isBefore(rangeStart)) {
+            throw new ValidationException("rangeEnd must not be before rangeStart");
+            // или:
+            // throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "rangeEnd must not be before rangeStart");
+        }
+
         return service.getPublicEvents(
                 text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, request
         );
     }
+
 
     @GetMapping("/{id}")
     public EventFullDto getPublicEventById(@PathVariable Long id, HttpServletRequest request) {
