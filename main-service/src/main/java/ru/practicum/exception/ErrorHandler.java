@@ -2,10 +2,12 @@ package ru.practicum.exception;
 
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
@@ -58,6 +60,13 @@ public class ErrorHandler {
     public ApiError handleInternalServerException(final Exception e) {
         log.error("500 {} {}", e.getClass(), e.getMessage(), e);
         return buildApiError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error", e.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
+        log.warn("409 {}", e.getMessage());
+        return buildApiError(HttpStatus.CONFLICT, "Conflict", e.getMessage());
     }
 
     private ApiError buildApiError(HttpStatus status, String reason, String message) {
