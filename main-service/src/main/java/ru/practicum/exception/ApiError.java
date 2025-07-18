@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ApiError {
-    private String status;           // было HttpStatus, стало String
+    private String status;
     private String reason;
     private String message;
     private LocalDateTime timestamp;
