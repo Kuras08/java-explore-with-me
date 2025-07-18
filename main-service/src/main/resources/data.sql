@@ -1,5 +1,5 @@
 -- Пользователи
-INSERT INTO users (email, name)
+/*INSERT INTO users (email, name)
 VALUES ('alice@example.com', 'Alice'),
        ('bob@example.com', 'Bob'),
        ('charlie@example.com', 'Charlie');
@@ -35,3 +35,4 @@ INSERT INTO compilation_events (compilation_id, event_id)
 VALUES (1, 1),
        (1, 2),
        (2, 2);
+/*
