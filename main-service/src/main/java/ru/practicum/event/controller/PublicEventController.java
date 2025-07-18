@@ -32,11 +32,10 @@ public class PublicEventController {
             @RequestParam(defaultValue = "10") int size,
             HttpServletRequest request
     ) {
-        // ДО вызова сервиса — проверка:
+
         if (rangeStart != null && rangeEnd != null && rangeEnd.isBefore(rangeStart)) {
             throw new ValidationException("rangeEnd must not be before rangeStart");
-            // или:
-            // throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "rangeEnd must not be before rangeStart");
+
         }
 
         return service.getPublicEvents(

@@ -21,6 +21,7 @@ import ru.practicum.event.model.Location;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.ValidationException;
 import ru.practicum.request.model.RequestStatus;
 import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.model.User;
@@ -52,8 +53,11 @@ public class EventServiceImpl implements EventService {
         User user = getUser(userId);
         Category category = getCategory(dto.getCategory());
 
+        if (dto.getEventDate() == null) {
+            throw new ValidationException("eventDate must not be null");
+        }
         if (dto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new ConflictException("Event date must be at least 2 hours in the future.");
+            throw new ValidationException("Event date must be at least 2 hours in the future.");
         }
 
         Event event = EventMapper.toEntity(dto, user, category);
@@ -116,14 +120,12 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepo.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
 
-        // Проверка eventDate при публикации
         if (dto.getStateAction() == UpdateEventAdminRequest.AdminStateAction.PUBLISH_EVENT) {
             if (dto.getEventDate() == null) {
-                // БЫЛО так:
-                throw new ConflictException("eventDate must not be null when publishing event");
+                throw new ValidationException("eventDate must not be null when publishing event");
             }
             if (dto.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
-                throw new ConflictException("Event date must be at least 1 hour in the future.");
+                throw new ValidationException("Event date must be at least 1 hour in the future.");
             }
             if (event.getState() != EventState.PENDING) {
                 throw new ConflictException("Only pending events can be published.");
