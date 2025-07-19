@@ -120,10 +120,12 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new NotFoundException("Event not found"));
 
         if (dto.getStateAction() == UpdateEventAdminRequest.AdminStateAction.PUBLISH_EVENT) {
-            if (dto.getEventDate() == null) {
+            // Берём дату из запроса, если есть, иначе — из самой сущности
+            LocalDateTime eventDateToCheck = dto.getEventDate() != null ? dto.getEventDate() : event.getEventDate();
+            if (eventDateToCheck == null) {
                 throw new ValidationException("eventDate must not be null when publishing event");
             }
-            if (dto.getEventDate().isBefore(LocalDateTime.now().plusHours(1))) {
+            if (eventDateToCheck.isBefore(LocalDateTime.now().plusHours(1))) {
                 throw new ValidationException("Event date must be at least 1 hour in the future.");
             }
             if (event.getState() != EventState.PENDING) {
