@@ -112,25 +112,27 @@ public class RequestServiceImpl implements RequestService {
                 confirmedCount >= event.getParticipantLimit();
 
         for (Request r : requests) {
+            // Только PENDING-заявки можно менять
             if (!r.getStatus().equals(RequestStatus.PENDING)) {
                 throw new ConflictException("Only pending requests can be modified.");
             }
 
-            if (dto.getStatus().equals("CONFIRMED")) {
+            if ("CONFIRMED".equals(dto.getStatus())) {
                 if (limitReached) {
-                    r.setStatus(RequestStatus.REJECTED);
-                    rejected.add(toDto(r));
-                } else {
-                    r.setStatus(RequestStatus.CONFIRMED);
-                    confirmed.add(toDto(r));
-                    confirmedCount++;
-                    if (confirmedCount >= event.getParticipantLimit()) {
-                        limitReached = true;
-                    }
+                    // Если лимит достигнут — кидаем исключение!
+                    throw new ConflictException("Participant limit reached");
                 }
-            } else if (dto.getStatus().equals("REJECTED")) {
+                r.setStatus(RequestStatus.CONFIRMED);
+                confirmed.add(toDto(r));
+                confirmedCount++;
+                if (event.getParticipantLimit() > 0 && confirmedCount >= event.getParticipantLimit()) {
+                    limitReached = true;
+                }
+            } else if ("REJECTED".equals(dto.getStatus())) {
                 r.setStatus(RequestStatus.REJECTED);
                 rejected.add(toDto(r));
+            } else {
+                throw new ConflictException("Unknown status: " + dto.getStatus());
             }
         }
 
