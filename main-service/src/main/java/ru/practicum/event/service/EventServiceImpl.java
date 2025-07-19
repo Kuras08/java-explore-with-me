@@ -208,22 +208,18 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("Событие не опубликовано");
         }
 
+
         event.setViews(event.getViews() + 1);
         eventRepo.save(event);
 
         saveStats(request);
 
-        String start = LocalDateTime.now().minusYears(1).format(FORMATTER);
-        String end = LocalDateTime.now().format(FORMATTER);
-        System.out.println("Stats range: " + start + " - " + end);
-
         List<ViewStats> viewStats = statsClient.getStats(
-                start,
-                end,
+                event.getPublishedOn().format(FORMATTER),
+                LocalDateTime.now().format(FORMATTER),
                 List.of("/events/" + id),
                 true
         );
-        System.out.println("ViewStats response: " + viewStats);
 
         long views = viewStats.isEmpty() ? 0 : viewStats.get(0).getHits();
 
@@ -270,6 +266,7 @@ public class EventServiceImpl implements EventService {
         }
         hit.setIp(ip);
         hit.setTimestamp(LocalDateTime.now());
+
         statsClient.saveHit(hit);
     }
 }
