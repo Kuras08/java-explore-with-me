@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 
 public class EventMapper {
 
-    public static EventFullDto toFullDto(Event event) {
-        return toFullDto(event, 0, event.getViews());
-    }
 
     public static EventFullDto toFullDto(Event event, int confirmedRequests) {
         return toFullDto(event, confirmedRequests, event.getViews());

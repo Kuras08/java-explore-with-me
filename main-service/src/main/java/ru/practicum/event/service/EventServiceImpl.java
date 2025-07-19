@@ -45,7 +45,6 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepo;
     private final RequestRepository requestRepo;
     private final StatsClient statsClient; // из stats-client
-    private final HttpServletRequest request;
 
     // PRIVATE --------------------------------------------
     @Override

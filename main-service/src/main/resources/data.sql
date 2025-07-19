@@ -1,5 +1,5 @@
 -- Пользователи
-/*INSERT INTO users (email, name)
+INSERT INTO users (email, name)
 VALUES ('alice@example.com', 'Alice'),
        ('bob@example.com', 'Bob'),
        ('charlie@example.com', 'Charlie');
