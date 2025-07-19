@@ -226,8 +226,6 @@ public class EventServiceImpl implements EventService {
         return EventMapper.toFullDto(event, getConfirmedRequests(id), views);
     }
 
-
-    // ВСПОМОГАТЕЛЬНЫЕ -----------------------------------
     private void updateEventFields(Event event, String title, String annotation, String description,
                                    LocalDateTime eventDate, Location location, Long categoryId,
                                    Boolean paid, Integer limit, Boolean moderation) {
