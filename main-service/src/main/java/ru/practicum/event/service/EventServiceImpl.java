@@ -256,7 +256,11 @@ public class EventServiceImpl implements EventService {
         EndpointHit hit = new EndpointHit();
         hit.setApp("ewm-main-service");
         hit.setUri(request.getRequestURI());
-        hit.setIp(request.getRemoteAddr());
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getRemoteAddr();
+        }
+        hit.setIp(ip);
         hit.setTimestamp(LocalDateTime.now());
 
         statsClient.saveHit(hit);
