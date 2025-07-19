@@ -44,7 +44,7 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepo;
     private final CategoryRepository categoryRepo;
     private final RequestRepository requestRepo;
-    private final StatsClient statsClient; // из stats-client
+    private final StatsClient statsClient;
 
     // PRIVATE --------------------------------------------
     @Override
@@ -199,14 +199,18 @@ public class EventServiceImpl implements EventService {
 
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public EventFullDto getPublicEventById(Long id, HttpServletRequest request) {
         Event event = eventRepo.findById(id)
-                .orElseThrow(() -> new NotFoundException("Event not found"));
+                .orElseThrow(() -> new NotFoundException("Событие с id " + id + " не найдено"));
 
         if (event.getState() != EventState.PUBLISHED) {
-            throw new NotFoundException("Event is not published");
+            throw new NotFoundException("Событие не опубликовано");
         }
+
+
+        event.setViews(event.getViews() + 1);
+        eventRepo.save(event);
 
         saveStats(request);
 
