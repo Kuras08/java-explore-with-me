@@ -26,10 +26,10 @@ public class EventMapper {
                 .eventDate(event.getEventDate())
                 .initiator(event.getInitiator() != null ? UserMapper.toShortDto(event.getInitiator()) : null)
                 .location(event.getLocation())
-                .paid(event.getPaid()) // <--- Важно, если Boolean!
+                .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
                 .publishedOn(event.getPublishedOn())
-                .requestModeration(event.getRequestModeration()) // <--- Boolean!
+                .requestModeration(event.getRequestModeration())
                 .state(event.getState() != null ? event.getState().name() : null)
                 .views(views)
                 .confirmedRequests(confirmedRequests)
@@ -37,12 +37,9 @@ public class EventMapper {
     }
 
     public static EventShortDto toShortDto(Event event) {
-        return toShortDto(event, 0, event.getViews());
+        return toShortDto(event, 0, 0L);
     }
 
-    public static EventShortDto toShortDto(Event event, int confirmedRequests) {
-        return toShortDto(event, confirmedRequests, event.getViews());
-    }
 
     public static EventShortDto toShortDto(Event event, int confirmedRequests, long views) {
         return EventShortDto.builder()

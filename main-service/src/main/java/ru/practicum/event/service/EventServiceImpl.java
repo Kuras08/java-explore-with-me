@@ -62,14 +62,14 @@ public class EventServiceImpl implements EventService {
         Event event = EventMapper.toEntity(dto, user, category);
         Event saved = eventRepo.save(event);
 
-        return EventMapper.toFullDto(saved, 0, 0);
+        return EventMapper.toFullDto(saved, 0, 0L);
     }
 
     @Override
     public List<EventShortDto> getUserEvents(Long userId, int from, int size) {
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepo.findAllByInitiatorId(userId, pageable).stream()
-                .map(e -> EventMapper.toShortDto(e, getConfirmedRequests(e.getId())))
+                .map(e -> EventMapper.toShortDto(e, getConfirmedRequests(e.getId()), 0L))
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +77,7 @@ public class EventServiceImpl implements EventService {
     public EventFullDto getUserEvent(Long userId, Long eventId) {
         Event event = eventRepo.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Event not found"));
-        return EventMapper.toFullDto(event, getConfirmedRequests(eventId), 0);
+        return EventMapper.toFullDto(event, getConfirmedRequests(eventId), 0L);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class EventServiceImpl implements EventService {
             event.setState(EventState.CANCELED);
         }
 
-        return EventMapper.toFullDto(eventRepo.save(event), getConfirmedRequests(eventId), 0);
+        return EventMapper.toFullDto(eventRepo.save(event), getConfirmedRequests(eventId), 0L);
     }
 
     // ADMIN --------------------------------------------
@@ -116,7 +116,7 @@ public class EventServiceImpl implements EventService {
         Specification<Event> spec = EventSpecifications.adminSearch(users, states, categories, rangeStart, rangeEnd);
         Pageable pageable = PageRequest.of(from / size, size);
         return eventRepo.findAll(spec, pageable).stream()
-                .map(e -> EventMapper.toFullDto(e, getConfirmedRequests(e.getId()), 0))
+                .map(e -> EventMapper.toFullDto(e, getConfirmedRequests(e.getId()), 0L))
                 .collect(Collectors.toList());
     }
 
@@ -150,7 +150,7 @@ public class EventServiceImpl implements EventService {
                 dto.getEventDate(), dto.getLocation(), dto.getCategory(),
                 dto.getPaid(), dto.getParticipantLimit(), dto.getRequestModeration());
 
-        return EventMapper.toFullDto(eventRepo.save(event), getConfirmedRequests(eventId), 0);
+        return EventMapper.toFullDto(eventRepo.save(event), getConfirmedRequests(eventId), 0L);
     }
 
 
