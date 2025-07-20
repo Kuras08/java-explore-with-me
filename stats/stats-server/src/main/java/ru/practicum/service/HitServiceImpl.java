@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.EndpointHit;
 import ru.practicum.ViewStats;
 import ru.practicum.ViewStatsProjection;
+import ru.practicum.exception.BadRequestException;
 import ru.practicum.model.Hit;
 import ru.practicum.repository.HitRepository;
 
@@ -34,6 +35,9 @@ public class HitServiceImpl implements HitService {
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end,
                                     List<String> uris, boolean unique) {
+        if (start.isAfter(end)) {
+            throw new BadRequestException("Дата начала не может быть после даты конца!");
+        }
         boolean hasUris = uris != null && !uris.isEmpty();
         List<ViewStatsProjection> projections;
 
