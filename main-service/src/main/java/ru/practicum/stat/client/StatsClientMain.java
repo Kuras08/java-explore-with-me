@@ -17,7 +17,7 @@ import java.util.*;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class StatsClient {
+public class StatsClientMain {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private final RestTemplate restTemplate;

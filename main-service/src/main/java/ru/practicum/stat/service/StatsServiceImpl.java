@@ -3,7 +3,7 @@ package ru.practicum.stat.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.stat.client.StatsClient;
+import ru.practicum.stat.client.StatsClientMain;
 import ru.practicum.stat.dto.EndpointHit;
 import ru.practicum.stat.dto.ViewStats;
 
@@ -21,7 +21,7 @@ public class StatsServiceImpl implements StatsService {
 
     private static final String APP_NAME = "ewm-main-service";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private final StatsClient statsClient;
+    private final StatsClientMain statsClientMain;
 
     @Override
     public void saveHit(String uri, String ip) {
@@ -30,7 +30,7 @@ public class StatsServiceImpl implements StatsService {
         hit.setUri(uri);
         hit.setIp(ip);
         hit.setTimestamp(LocalDateTime.now());
-        statsClient.saveHit(hit);
+        statsClientMain.saveHit(hit);
         log.info("StatsService: Hit saved for uri {} from ip {}", uri, ip);
     }
 
@@ -43,7 +43,7 @@ public class StatsServiceImpl implements StatsService {
         LocalDateTime start = LocalDateTime.now().minusYears(20);
         LocalDateTime end = LocalDateTime.now().plusYears(20);
 
-        List<ViewStats> viewStats = statsClient.getStats(start, end, uris, unique);
+        List<ViewStats> viewStats = statsClientMain.getStats(start, end, uris, unique);
 
         Map<Long, Long> views = new HashMap<>();
         for (ViewStats vs : viewStats) {
