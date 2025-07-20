@@ -2,7 +2,6 @@ package ru.practicum.exception;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -19,7 +18,7 @@ import java.io.StringWriter;
 @RequiredArgsConstructor
 public class ErrorHandler {
 
-    // Любые ошибки с параметрами запроса — 400
+
     @ExceptionHandler({
             BadRequestException.class,
             MissingServletRequestParameterException.class,
