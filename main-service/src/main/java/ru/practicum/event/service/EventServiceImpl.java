@@ -208,10 +208,6 @@ public class EventServiceImpl implements EventService {
             throw new NotFoundException("Событие не опубликовано");
         }
 
-
-        event.setViews(event.getViews() + 1);
-        eventRepo.save(event);
-
         saveStats(request);
 
         List<ViewStats> viewStats = statsClient.getStats(
