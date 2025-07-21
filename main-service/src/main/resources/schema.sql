@@ -1,4 +1,11 @@
--- Таблица пользователей
+DROP TABLE IF EXISTS compilation_events;
+DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS requests;
+DROP TABLE IF EXISTS compilations;
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE users
 (
     id    BIGSERIAL PRIMARY KEY,
@@ -58,4 +65,15 @@ CREATE TABLE compilation_events
     compilation_id BIGINT NOT NULL REFERENCES compilations (id) ON DELETE CASCADE,
     event_id       BIGINT NOT NULL REFERENCES events (id) ON DELETE CASCADE,
     PRIMARY KEY (compilation_id, event_id)
+);
+
+CREATE TABLE comments
+(
+    id        BIGSERIAL PRIMARY KEY,
+    text      VARCHAR(2000) NOT NULL,
+    event_id  BIGINT        NOT NULL REFERENCES events (id) ON DELETE CASCADE,
+    author_id BIGINT        NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    created   TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated   TIMESTAMP WITHOUT TIME ZONE,
+    deleted   BOOLEAN       NOT NULL DEFAULT FALSE
 );

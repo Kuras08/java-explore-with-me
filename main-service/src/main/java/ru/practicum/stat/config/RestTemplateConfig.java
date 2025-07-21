@@ -1,6 +1,5 @@
 package ru.practicum.stat.config;
 
-// src/main/java/ru/practicum/config/RestTemplateConfig.java
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
