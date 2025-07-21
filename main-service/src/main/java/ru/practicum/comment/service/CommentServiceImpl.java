@@ -19,7 +19,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
@@ -27,6 +26,7 @@ public class CommentServiceImpl implements CommentService {
     private final EventRepository eventRepository;
 
     @Override
+    @Transactional
     public CommentOutputDto addComment(Long userId, Long eventId, CommentInputDto dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found: " + userId));
@@ -47,6 +47,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentOutputDto updateComment(Long userId, Long commentId, CommentInputDto dto) {
         Comment comment = commentRepository.findByIdAndAuthorIdAndDeletedFalse(commentId, userId)
                 .orElseThrow(() -> new NotFoundException("Comment not found or not your comment"));
@@ -59,6 +60,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(Long userId, Long commentId) {
         Comment comment = commentRepository.findByIdAndAuthorIdAndDeletedFalse(commentId, userId)
                 .orElseThrow(() -> new NotFoundException("Comment not found or not your comment"));
@@ -84,6 +86,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional // это массовый update
     public void deleteAllCommentsByEvent(Long eventId) {
         List<Comment> comments = commentRepository.findByEventIdAndDeletedFalse(eventId);
         for (Comment comment : comments) {
