@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Slf4j
-@Component
+@Component("statsClientMain")
 @RequiredArgsConstructor
 public class StatsClientMain {
 

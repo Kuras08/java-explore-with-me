@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@Component
+@Component("statsClient")
 public class StatsClient extends BaseClient {
 
     public StatsClient(@Value("${stats-server.url}") String serverUrl,
